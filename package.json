@@ -1,0 +1,72 @@
+{
+  "name": "scraper",
+  "version": "1.0.0",
+  "description": "Prototype Web Scraping tool based on Vue, Vuex, Vue-Router, and automated using Webpack.",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack-dev-server --mode development --config webpack.dev.js",
+    "build": "webpack --mode production --optimize-minimize --config webpack.prod.js",
+    "dev": "npm run build && npm run start",
+    "deploy": "gh-pages -d dist",
+    "watch": "webpack --watch",
+    "stats": "webpack --mode production --optimize-minimize --config webpack.prod.js --json > stats.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/uxinkc/scraper.git"
+  },
+  "author": "Casey Hill",
+  "contributors": [
+    "Casey Hill <uxinkc@gmail.com> (https://github.com/uxinkc)"
+  ],
+  "devDependencies": {
+    "@babel/core": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "autoprefixer": "^8.6.0",
+    "babel-loader": "^8.0.6",
+    "clean-webpack-plugin": "^0.1.19",
+    "copy-webpack-plugin": "^5.1.1",
+    "css-loader": "^3.5.2",
+    "file-loader": "^1.1.11",
+    "fsa-style": "^2.4.2",
+    "gh-pages": "^2.1.1",
+    "handlebars": "^4.0.11",
+    "handlebars-loader": "^1.7.1",
+    "handlebars-webpack-plugin": "^1.5.0",
+    "html-loader": "^0.5.5",
+    "html-webpack-plugin": "^3.2.0",
+    "imports-loader": "^0.8.0",
+    "jquery": "^3.3.1",
+    "lodash": "^4.17.10",
+    "mini-css-extract-plugin": "^0.4.0",
+    "node-sass": "^4.12.0",
+    "path": "^0.12.7",
+    "postcss-import": "^11.1.0",
+    "postcss-loader": "^2.1.5",
+    "sass-loader": "^7.0.1",
+    "style-loader": "^0.21.0",
+    "stylelint": "^9.2.1",
+    "stylelint-webpack-plugin": "^0.10.5",
+    "url-loader": "^1.0.1",
+    "vue-loader": "^15.7.1",
+    "vue-style-loader": "^4.1.2",
+    "vue-template-compiler": "^2.6.10",
+    "webpack": "^4.35.3",
+    "webpack-cli": "^3.3.5",
+    "webpack-dev-server": "^3.7.2",
+    "webpack-merge": "^4.2.1",
+    "workbox-webpack-plugin": "^4.3.1"
+  },
+  "dependencies": {
+    "@epegzz/sass-vars-loader": "^4.3.0",
+    "html-beautify-webpack-plugin": "^1.0.5",
+    "pixrem": "^4.0.1",
+    "rxjs": "^6.5.3",
+    "rxjs-compat": "^6.5.3",
+    "sass-resources-loader": "^2.0.0",
+    "vue": "^2.6.10",
+    "vue-router": "^3.1.1",
+    "vue-rx": "^6.2.0",
+    "vuex": "^3.1.1"
+  }
+}
