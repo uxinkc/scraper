@@ -6,10 +6,24 @@
     <main id="main-content" tabindex="-1">
       <div class="fsa-section">
         <div class="fsa-section__bd">
-          <h1>Home Page</h1>
+          <h1>Scraper Tool</h1>
 
-          <input class="fsa-input fsa-input--block" @input="onQuickSearchInput" id="quick-search-id" type="text" name="search" value="" placeholder="Quick Search">
-          <div id="quick-search-results-id"></div>
+          <div class="fsa-field">
+            <label class="fsa-field__label" for="url">URL <span class="fsa-field__label-desc">Required</span></label>
+            <input class="fsa-input fsa-field__item" id="url" aria-describedby="url-help" aria-required="true" v-model="quickSearchUrl" name="url" type="text">
+            <span class="fsa-field__help" id="url-help">HTTPS enabled URLs are required</span>
+            <label class="fsa-field__label" for="linkClass">Link Class <span class="fsa-field__label-desc">Required</span></label>
+            <input class="fsa-input fsa-field__item" id="linkClass" aria-describedby="linkClass-help" aria-required="true" v-model="quickSearchClass" name="linkClass" type="text">
+            <span class="fsa-field__help" id="linkClass-help">Use a class that is on the achor tag</span>
+          </div>
+          <div class="fsa-field">
+            <button class="fsa-btn" @click="setSearchProperties">Set Properties</button>
+          </div>
+
+          <div class="fsa-field">
+            <input class="fsa-input fsa-input--block" @input="onQuickSearchInput" id="quick-search-id" type="text" name="search" value="" placeholder="Quick Search">
+            <div id="quick-search-results-id"></div>
+          </div>
 
         </div>
       </div>
@@ -32,8 +46,10 @@ export default {
 
   data(){
     return {
-      url: 'http://usda-fsa.github.io/fsa-design-system/sitemap/',
       searchArray: [],
+      quickSearchUrl: 'https://usda-fsa.github.io/fsa-design-system/sitemap/',
+      quickSearchClass: '.ds-sitemap__link',
+      //ds-sitemap__link
     }
   },
 
@@ -83,14 +99,18 @@ export default {
 
   methods: {
 
+    setSearchProperties: function(){
+      this.getSearchSource( this.getSearchContent );
+    },
+
     getSearchSource: function( callback ){
       if (window.XMLHttpRequest){ 
         let xhr = new XMLHttpRequest();
-        //console.log('xhr', xhr)
+        console.log('xhr', xhr)
         xhr.onreadystatechange = function(){
           callback(this)
         }
-        xhr.open( 'GET', this.url, true);
+        xhr.open( 'GET', this.quickSearchUrl, true);
         xhr.send();
       } else {
         console.log('no xhr')
@@ -98,10 +118,12 @@ export default {
     },
 
     getSearchContent: function(res){
+      console.log('res',res.response)
       let holder = document.createElement('html');
       holder.innerHTML = res.response
-      let list = [].slice.call(holder.querySelectorAll(".ds-sitemap__link"))
+      let list = [].slice.call( holder.querySelectorAll(this.quickSearchClass) )
       this.searchArray = list.map( item => {
+        console.log('item',item)
         return {text: item.innerText.trim(), url: item.pathname }
       })
     },
@@ -114,6 +136,7 @@ export default {
         else false
       });
       // return max 8 results
+      console.log('list',list)
       return list.slice(0,7);
     },
 
@@ -161,8 +184,6 @@ export default {
   created(){
     this.$store.dispatch('users/getUsersApi');
     this.$store.dispatch('employees/getEmployeesApi');
-
-    this.getSearchSource( this.getSearchContent );
   }
 }
 </script>
