@@ -8,64 +8,9 @@
         <div class="fsa-section__bd">
           <h1>Home Page</h1>
 
-          <form @submit.prevent="handleSubmit">
+          <input class="fsa-input fsa-input--block" @input="onQuickSearchInput" id="quick-search-id" type="text" name="search" value="" placeholder="Quick Search">
+          <div id="quick-search-results-id"></div>
 
-            <field
-              ID="name"
-              EXTRA_CLASSES=""
-              LABEL="Full Name"
-              INPUT_VALUE=""
-              INPUT_TYPE="text"
-              REQUIRED="true"
-              ARIA_REQUIRED="true"
-              BEHAVIOR=""
-              ARIA_DESCRIBEDBY="name__help"
-              ERROR_FIELD=""
-              HAS_HELP="true"
-            >
-              
-              <template v-slot:labelDescribe>
-                <span class="fsa-field__label-desc">Required</span>
-              </template>
-              <!-- Below 2 Slots should be used with above ARIA_DESCRIBEDBY -->
-              <template v-slot:help>
-                <span id="name__help" class="fsa-field__help">Use your full name, please.</span>
-              </template>
-              <template v-slot:message>
-                <span id="name-id__error-message" class="fsa-field__message" role="alert">Hey, you forgot your own name, silly!</span>
-              </template>
-
-            </field>
-
-            <field
-              ID="email"
-              EXTRA_CLASSES=""
-              LABEL="E-Mail"
-              INPUT_VALUE=""
-              INPUT_TYPE="text"
-              REQUIRED="true"
-              ARIA_REQUIRED="true"
-              BEHAVIOR=""
-              ARIA_DESCRIBEDBY="email__help"
-              ERROR_FIELD=""
-            >
-              
-              <template v-slot:labelDescribe>
-                <span class="fsa-field__label-desc">Required</span>
-              </template>
-              <!-- Below 2 Slots should be used with above ARIA_DESCRIBEDBY -->
-              <template v-slot:help>
-                <span id="email__help" class="fsa-field__help">Only valid emails should be used.</span>
-              </template>
-              <template v-slot:message>
-                <span id="email__error-message" class="fsa-field__message" role="alert">Hey, you forgot your email address!</span>
-              </template>
-
-            </field>
-
-            <button class="fsa-btn fsa-btn--secondary" type="submit">Add User</button> 
-
-          </form>
         </div>
       </div>
     </main>
@@ -84,6 +29,13 @@ import field from '../components/field/field';
 
 
 export default {
+
+  data(){
+    return {
+      url: 'http://usda-fsa.github.io/fsa-design-system/sitemap/',
+      searchArray: [],
+    }
+  },
 
   components: {
     baseHeader: baseHeader,
@@ -131,6 +83,60 @@ export default {
 
   methods: {
 
+    getSearchSource: function( callback ){
+      if (window.XMLHttpRequest){ 
+        let xhr = new XMLHttpRequest();
+        //console.log('xhr', xhr)
+        xhr.onreadystatechange = function(){
+          callback(this)
+        }
+        xhr.open( 'GET', this.url, true);
+        xhr.send();
+      } else {
+        console.log('no xhr')
+      }
+    },
+
+    getSearchContent: function(res){
+      let holder = document.createElement('html');
+      holder.innerHTML = res.response
+      let list = [].slice.call(holder.querySelectorAll(".ds-sitemap__link"))
+      this.searchArray = list.map( item => {
+        return {text: item.innerText.trim(), url: item.pathname }
+      })
+    },
+
+    doSearch( p ){
+      let list = this.searchArray.filter( item => {
+        let lowCategory = item.text.toLowerCase()
+        let lowPhrase = p.toLowerCase()
+        if(lowCategory.indexOf( lowPhrase ) > -1) return true
+        else false
+      });
+      // return max 8 results
+      return list.slice(0,7);
+    },
+
+    onQuickSearchInput: function(){
+
+      // move to Vue v-model
+      let quickSearch = document.getElementById('quick-search-id');
+      let quickSearchResults = document.getElementById('quick-search-results-id');
+
+      if(quickSearch.value!=''){
+        let newHTML = '<ul>';
+        let list = this.doSearch( quickSearch.value );
+        list.forEach( item => {
+          newHTML += '<li>'+item.text+' - <a href="'+item.url+'">'+ item.url +'</a></li>'
+        });
+        newHTML += '</ul>';
+        quickSearchResults.innerHTML = newHTML;
+      } else {
+        quickSearchResults.innerHTML = '';
+      }
+
+    },
+
     submitForm: function( user ){
       this.$store.dispatch('users/addNewUser', user);
     },
@@ -155,6 +161,8 @@ export default {
   created(){
     this.$store.dispatch('users/getUsersApi');
     this.$store.dispatch('employees/getEmployeesApi');
+
+    this.getSearchSource( this.getSearchContent );
   }
 }
 </script>

@@ -22,7 +22,7 @@ module.exports = merge(common, {
   output: {
     path: path.resolve('./dist'),
     filename: '[name].bundle.js',
-    publicPath: '/protokit/'    
+    publicPath: '/scraper/'    
   },
 
   module: {
